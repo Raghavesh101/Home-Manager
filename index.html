@@ -11,25 +11,76 @@
     <script src="firebase-config.js" defer></script>
     
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-        .calendar-day { aspect-ratio: 1 / 1; transition: all 0.2s ease-in-out; }
-        .calendar-day:hover { transform: scale(1.05); }
-        .modal { transition: opacity 0.3s ease; }
-        .modal-content { transform: scale(0.95); transition: transform 0.3s ease; }
+        body { 
+            font-family: 'Inter', sans-serif;
+            background-color: #f7fafc; /* Softer gray background */
+        }
+        #app-container {
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .calendar-grid { 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            gap: 0.5rem; 
+        }
+        .calendar-day { 
+            aspect-ratio: 1 / 1; 
+            transition: all 0.2s ease-in-out;
+            border-radius: 0.75rem;
+            font-weight: 600;
+        }
+        .calendar-day:hover { 
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07);
+        }
+        .modal { 
+            transition: opacity 0.3s ease; 
+        }
+        .modal-content { 
+            transform: scale(0.95); 
+            transition: transform 0.3s ease; 
+        }
         input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type=number] { -moz-appearance: textfield; }
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] { 
+            -moz-appearance: textfield; 
+        }
+        .page-btn {
+            transition: all 0.3s ease;
+            background-image: linear-gradient(to right, #4f46e5, #7c3aed);
+        }
+        .page-btn:hover {
+            box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.4);
+            transform: translateY(-3px);
+        }
+        .summary-card {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            transition: all 0.2s ease;
+        }
+        .summary-card:hover {
+            border-color: #d1d5db;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-    <div id="app-container" class="max-w-lg mx-auto p-4 min-h-screen bg-white shadow-md">
+    <div id="app-container" class="max-w-lg mx-auto p-4 sm:p-6 min-h-screen">
 
         <!-- Login Page -->
         <div id="login-page" class="flex flex-col items-center justify-center h-screen">
-            <h1 class="text-3xl font-bold text-gray-900 text-center mb-8">Home Hub</h1>
-            <button id="google-signin-btn" class="flex items-center justify-center w-full max-w-xs bg-white border border-gray-300 rounded-lg shadow-sm px-6 py-3 text-sm font-medium text-gray-800 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <h1 class="text-4xl font-bold text-gray-900 text-center mb-2">Welcome to</h1>
+            <h2 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500 text-center mb-10">Home Hub</h2>
+            <button id="google-signin-btn" class="flex items-center justify-center w-full max-w-xs bg-white border border-gray-300 rounded-lg shadow-sm px-6 py-3 text-sm font-medium text-gray-800 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-105">
                 <svg class="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571l6.19,5.238C42.021,35.596,44,30.138,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path></svg>
                 <span>Sign in with Google</span>
             </button>
@@ -40,22 +91,22 @@
             <header class="flex items-center justify-between mb-6 pb-4 border-b">
                 <h1 id="page-title" class="text-3xl font-bold text-gray-900">Home Hub</h1>
                 <div>
-                    <button id="back-to-home" class="hidden text-blue-600 hover:text-blue-800 font-medium mr-4">&larr; Home</button>
-                    <button id="sign-out-btn" class="text-sm text-red-500 hover:text-red-700 font-medium">Sign Out</button>
+                    <button id="back-to-home" class="hidden text-indigo-600 hover:text-indigo-800 font-medium mr-4 transition-colors">&larr; Home</button>
+                    <button id="sign-out-btn" class="text-sm text-red-500 hover:text-red-700 font-medium transition-colors">Sign Out</button>
                 </div>
             </header>
 
             <main id="home-page">
-                <div id="bill-reminder" class="hidden p-4 mb-4 bg-indigo-100 border-l-4 border-indigo-500 text-indigo-800 rounded-lg shadow">
+                <div id="bill-reminder" class="hidden p-4 mb-6 bg-indigo-50 border border-indigo-200 text-indigo-800 rounded-xl shadow-sm">
                     <div class="flex justify-between items-start">
                         <div>
-                            <h4 class="font-bold text-lg">End of Month Bills</h4>
-                            <p class="text-sm">Time to pay the bills for this month!</p>
-                            <div class="mt-2 text-sm space-y-2">
+                            <h4 class="font-bold text-lg text-indigo-900">End of Month Bills</h4>
+                            <p class="text-sm text-indigo-700">Time to pay the bills for this month!</p>
+                            <div class="mt-3 text-sm space-y-2">
                                 <p><strong>Maid:</strong> <span class="font-normal">Pay monthly salary</span></p>
                                 <div>
                                     <p><strong>Milk/Curd Total:</strong> <span id="reminder-milk-total" class="font-semibold">₹0.00</span></p>
-                                    <p class="text-xs text-indigo-600 pl-2">(<span id="reminder-milk-count">0</span> milk, <span id="reminder-curd-count">0</span> curd)</p>
+                                    <p class="text-xs text-indigo-500 pl-2">(<span id="reminder-milk-count">0</span> milk, <span id="reminder-curd-count">0</span> curd)</p>
                                 </div>
                             </div>
                         </div>
@@ -64,28 +115,28 @@
                 </div>
                 <h2 class="text-xl font-semibold mb-4 text-gray-700">What would you like to manage?</h2>
                 <div class="grid grid-cols-1 gap-4">
-                    <button data-page="maid-tracker-page" class="page-btn w-full bg-blue-600 text-white font-bold py-4 px-4 rounded-lg shadow-md hover:bg-blue-700">Maid Tracker</button>
-                    <button data-page="milk-tracker-page" class="page-btn w-full bg-green-600 text-white font-bold py-4 px-4 rounded-lg shadow-md hover:bg-green-700">Milk Tracker</button>
-                    <button class="w-full bg-gray-400 text-white font-bold py-4 px-4 rounded-lg cursor-not-allowed">Expense Tracker (Coming Soon)</button>
+                    <button data-page="maid-tracker-page" class="page-btn w-full text-white font-bold py-5 px-4 rounded-xl shadow-md">Maid Tracker</button>
+                    <button data-page="milk-tracker-page" class="page-btn w-full text-white font-bold py-5 px-4 rounded-xl shadow-md">Milk Tracker</button>
+                    <button class="w-full bg-gray-300 text-gray-500 font-bold py-5 px-4 rounded-xl cursor-not-allowed">Expense Tracker (Coming Soon)</button>
                 </div>
             </main>
 
             <!-- Maid Tracker Page -->
             <div id="maid-tracker-page" class="page hidden">
                 <div class="flex items-center justify-between mb-4">
-                    <button class="prev-month p-2 rounded-full hover:bg-gray-200">&lt;</button>
+                    <button class="prev-month p-2 rounded-full hover:bg-gray-200 transition-colors">&lt;</button>
                     <h2 class="month-year text-xl font-bold"></h2>
-                    <button class="next-month p-2 rounded-full hover:bg-gray-200">&gt;</button>
+                    <button class="next-month p-2 rounded-full hover:bg-gray-200 transition-colors">&gt;</button>
                 </div>
-                <div class="calendar-grid text-center font-medium text-sm text-gray-500 mb-2">
+                <div class="calendar-grid text-center font-medium text-sm text-gray-400 mb-2">
                     <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
                 </div>
                 <div class="calendar calendar-grid"></div>
                 <div class="summary mt-8 pt-6 border-t">
-                    <h3 class="text-lg font-semibold mb-3 text-gray-800">Monthly Summary</h3>
-                    <div class="space-y-2">
-                        <div class="flex justify-between items-center p-3 bg-green-100 rounded-lg"><span class="font-medium text-green-800">Cleaned Days</span><span class="cleaned-count font-bold text-lg text-green-900">0</span></div>
-                        <div class="flex justify-between items-center p-3 bg-red-100 rounded-lg"><span class="font-medium text-red-800">Absent Days</span><span class="absent-count font-bold text-lg text-red-900">0</span></div>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">Monthly Summary</h3>
+                    <div class="space-y-3">
+                        <div class="summary-card flex justify-between items-center"><span class="font-medium text-green-700">Cleaned Days</span><span class="cleaned-count font-bold text-lg text-green-800">0</span></div>
+                        <div class="summary-card flex justify-between items-center"><span class="font-medium text-red-700">Absent Days</span><span class="absent-count font-bold text-lg text-red-800">0</span></div>
                     </div>
                 </div>
             </div>
@@ -93,29 +144,29 @@
             <!-- Milk Tracker Page -->
             <div id="milk-tracker-page" class="page hidden">
                 <div class="flex items-center justify-between mb-4">
-                    <button class="prev-month p-2 rounded-full hover:bg-gray-200">&lt;</button>
+                    <button class="prev-month p-2 rounded-full hover:bg-gray-200 transition-colors">&lt;</button>
                     <h2 class="month-year text-xl font-bold"></h2>
-                    <button class="next-month p-2 rounded-full hover:bg-gray-200">&gt;</button>
+                    <button class="next-month p-2 rounded-full hover:bg-gray-200 transition-colors">&gt;</button>
                 </div>
-                <div class="calendar-grid text-center font-medium text-sm text-gray-500 mb-2">
+                <div class="calendar-grid text-center font-medium text-sm text-gray-400 mb-2">
                     <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
                 </div>
                 <div class="calendar calendar-grid"></div>
                 <div class="mt-8 pt-6 border-t">
-                    <h3 class="text-lg font-semibold mb-3 text-gray-800">Settings</h3>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">Settings</h3>
                     <div class="grid grid-cols-2 gap-4">
-                        <div><label for="milk-cost" class="block text-sm font-medium text-gray-700">Cost per Milk Packet</label><input type="number" id="milk-cost" class="setting-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"></div>
-                        <div><label for="curd-cost" class="block text-sm font-medium text-gray-700">Cost per Curd Unit</label><input type="number" id="curd-cost" class="setting-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"></div>
+                        <div><label for="milk-cost" class="block text-sm font-medium text-gray-600">Cost per Milk</label><input type="number" id="milk-cost" class="setting-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm"></div>
+                        <div><label for="curd-cost" class="block text-sm font-medium text-gray-600">Cost per Curd</label><input type="number" id="curd-cost" class="setting-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm"></div>
                     </div>
-                    <div class="mt-4"><label for="milk-default-packets" class="block text-sm font-medium text-gray-700">Default Milk Packets</label><input type="number" id="milk-default-packets" class="setting-input mt-1 block w-full max-w-xs px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"></div>
+                    <div class="mt-4"><label for="milk-default-packets" class="block text-sm font-medium text-gray-600">Default Milk Packets</label><input type="number" id="milk-default-packets" class="setting-input mt-1 block w-full max-w-xs px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm"></div>
                 </div>
                 <div class="summary mt-6 pt-6 border-t">
-                    <h3 class="text-lg font-semibold mb-3 text-gray-800">Monthly Expense Summary</h3>
-                    <div class="space-y-2">
-                        <div class="p-3 bg-blue-100 rounded-lg"><div class="flex justify-between items-center"><span class="font-medium text-blue-800">Milk Packets</span><span class="milk-count font-bold text-lg text-blue-900">0</span></div><div class="flex justify-between items-center text-sm mt-1"><span class="text-blue-700">Total Milk Cost</span><span class="milk-total-cost font-medium text-blue-800">₹0.00</span></div></div>
-                        <div class="p-3 bg-yellow-100 rounded-lg"><div class="flex justify-between items-center"><span class="font-medium text-yellow-800">Curd Units</span><span class="curd-count font-bold text-lg text-yellow-900">0</span></div><div class="flex justify-between items-center text-sm mt-1"><span class="text-yellow-700">Total Curd Cost</span><span class="curd-total-cost font-medium text-yellow-800">₹0.00</span></div></div>
-                        <div class="p-3 bg-gray-200 rounded-lg"><div class="flex justify-between items-center"><span class="font-medium text-gray-800">Days Not Delivered</span><span class="not-delivered-count font-bold text-lg text-gray-900">0</span></div></div>
-                        <div class="flex justify-between items-center p-4 bg-gray-800 text-white rounded-lg mt-4"><span class="font-bold text-lg">Grand Total</span><span class="grand-total font-bold text-xl">₹0.00</span></div>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">Monthly Expense Summary</h3>
+                    <div class="space-y-3">
+                        <div class="summary-card"><div class="flex justify-between items-center"><span class="font-medium text-blue-700">Milk Packets</span><span class="milk-count font-bold text-lg text-blue-800">0</span></div><div class="flex justify-between items-center text-sm mt-1"><span class="text-blue-600">Total Milk Cost</span><span class="milk-total-cost font-medium text-blue-800">₹0.00</span></div></div>
+                        <div class="summary-card"><div class="flex justify-between items-center"><span class="font-medium text-yellow-700">Curd Units</span><span class="curd-count font-bold text-lg text-yellow-800">0</span></div><div class="flex justify-between items-center text-sm mt-1"><span class="text-yellow-600">Total Curd Cost</span><span class="curd-total-cost font-medium text-yellow-800">₹0.00</span></div></div>
+                        <div class="summary-card"><div class="flex justify-between items-center"><span class="font-medium text-gray-700">Days Not Delivered</span><span class="not-delivered-count font-bold text-lg text-gray-800">0</span></div></div>
+                        <div class="flex justify-between items-center p-4 bg-gray-800 text-white rounded-xl mt-4"><span class="font-bold text-lg">Grand Total</span><span class="grand-total font-bold text-xl">₹0.00</span></div>
                     </div>
                 </div>
             </div>
@@ -127,9 +178,9 @@
         <div class="modal-content bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
             <h3 class="text-xl font-bold text-center mb-6">Update Status for <span class="modal-date"></span></h3>
             <div class="grid grid-cols-1 gap-3">
-                <button data-status="cleaned" class="status-btn w-full bg-green-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-600">Cleaned</button>
-                <button data-status="absent" class="status-btn w-full bg-red-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-red-600">Absent</button>
-                <button data-status="none" class="status-btn w-full bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-300 mt-4">Clear Status</button>
+                <button data-status="cleaned" class="status-btn w-full bg-green-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-600 transition-colors">Cleaned</button>
+                <button data-status="absent" class="status-btn w-full bg-red-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-red-600 transition-colors">Absent</button>
+                <button data-status="none" class="status-btn w-full bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-300 mt-4 transition-colors">Clear Status</button>
             </div>
         </div>
     </div>
@@ -137,13 +188,13 @@
         <div class="modal-content bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
             <h3 class="text-xl font-bold text-center mb-6">Update Delivery for <span class="modal-date"></span></h3>
             <div class="space-y-4">
-                <div><label for="milk-packets" class="block text-sm font-medium text-gray-700">Milk Packets</label><input type="number" id="milk-packets" min="0" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"></div>
-                <div><label for="curd-units" class="block text-sm font-medium text-gray-700">Curd Units</label><input type="number" id="curd-units" min="0" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"></div>
+                <div><label for="milk-packets" class="block text-sm font-medium text-gray-700">Milk Packets</label><input type="number" id="milk-packets" min="0" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm"></div>
+                <div><label for="curd-units" class="block text-sm font-medium text-gray-700">Curd Units</label><input type="number" id="curd-units" min="0" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm"></div>
             </div>
             <div class="mt-6 grid grid-cols-1 gap-3">
-                <button id="save-milk-entry" class="w-full bg-green-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-600">Save Delivery</button>
-                <button id="not-delivered-entry" class="w-full bg-gray-400 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-500">Mark as Not Delivered</button>
-                <button id="clear-milk-entry" class="w-full bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-300 mt-2">Clear Entry</button>
+                <button id="save-milk-entry" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 transition-colors">Save Delivery</button>
+                <button id="not-delivered-entry" class="w-full bg-gray-400 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-500 transition-colors">Mark as Not Delivered</button>
+                <button id="clear-milk-entry" class="w-full bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-300 mt-2 transition-colors">Clear Entry</button>
             </div>
         </div>
     </div>
@@ -273,7 +324,7 @@
                         dayEl.textContent = day;
                         dayEl.dataset.day = day;
                         const today = new Date();
-                        if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) dayEl.classList.add('border-blue-500', 'text-blue-600');
+                        if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) dayEl.classList.add('border-indigo-500', 'text-indigo-600');
                         else dayEl.classList.add('border-gray-200');
                         updateDayElement(dayEl, monthData[day]);
                         dayEl.addEventListener('click', () => { selectedDayElement = dayEl; openStatusModal(day); });
@@ -282,7 +333,7 @@
                     updateSummary(monthData);
                 };
                 const updateDayElement = (element, status) => {
-                    element.classList.remove('bg-green-500', 'bg-red-500', 'text-white', 'bg-blue-500', 'bg-gray-400');
+                    element.classList.remove('bg-green-500', 'bg-red-500', 'text-white', 'bg-indigo-500', 'bg-gray-400');
                     if (activeTracker === 'maid-tracker-page') {
                         if (status === 'cleaned') element.classList.add('bg-green-500', 'text-white');
                         else if (status === 'absent') element.classList.add('bg-red-500', 'text-white');
@@ -290,7 +341,7 @@
                         if (status?.status === 'not-delivered') {
                             element.classList.add('bg-gray-400', 'text-white');
                         } else if (status && (status.milk > 0 || status.curd > 0)) {
-                            element.classList.add('bg-blue-500', 'text-white');
+                            element.classList.add('bg-indigo-500', 'text-white');
                         }
                     }
                 };

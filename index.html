@@ -74,10 +74,10 @@
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-    <div id="app-container" class="max-w-lg mx-auto p-4 sm:p-6 min-h-screen">
+    <div id="app-container" class="max-w-lg mx-auto p-4 sm:p-6 min-h-screen flex flex-col">
 
         <!-- Login Page -->
-        <div id="login-page" class="flex flex-col items-center justify-center h-screen">
+        <div id="login-page" class="flex-grow flex flex-col items-center justify-center">
             <h1 class="text-4xl font-bold text-gray-900 text-center mb-2">Welcome to</h1>
             <h2 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500 text-center mb-10">Home Hub</h2>
             <button id="google-signin-btn" class="flex items-center justify-center w-full max-w-xs bg-white border border-gray-300 rounded-lg shadow-sm px-6 py-3 text-sm font-medium text-gray-800 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-105">
@@ -87,7 +87,7 @@
         </div>
 
         <!-- Main App Content (Initially Hidden) -->
-        <div id="main-app" class="hidden">
+        <div id="main-app" class="hidden flex-grow flex flex-col">
             <header class="flex items-center justify-between mb-6 pb-4 border-b">
                 <h1 id="page-title" class="text-3xl font-bold text-gray-900">Home Hub</h1>
                 <div>
@@ -96,7 +96,18 @@
                 </div>
             </header>
 
-            <main id="home-page">
+            <main id="home-page" class="flex-grow flex flex-col h-full">
+                <div class="w-full max-w-sm mx-auto my-8">
+                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#A5B4FC" d="M44.4,-51.9C57.2,-41.2,67.1,-27.1,71.2,-11.1C75.3,4.9,73.6,22.8,64.8,36.2C56,49.6,40.1,58.5,24.3,64.2C8.5,69.9,-7.2,72.4,-21.8,68.4C-36.4,64.4,-50,53.9,-58.8,40.6C-67.6,27.3,-71.7,11.2,-69.5,-3.8C-67.3,-18.8,-58.8,-32.7,-47.5,-43.5C-36.2,-54.3,-22.1,-62,-7.5,-60.9C7.2,-59.8,14.4,-50.1,24.4,-49.2C34.4,-48.4,44.4,-51.9,44.4,-51.9" transform="translate(100 100) scale(1.2)" />
+                        <g transform="translate(100 100)">
+                            <path d="M-20,-20 L20,-20 L20,10 L30,10 L0,-20 L-30,10 L-20,10 Z" fill="white" stroke="#4F46E5" stroke-width="3" />
+                            <rect x="-15" y="10" width="30" height="20" fill="white" stroke="#4F46E5" stroke-width="3" />
+                            <rect x="-5" y="15" width="10" height="15" fill="#C7D2FE" />
+                        </g>
+                    </svg>
+                </div>
+
                 <div id="bill-reminder" class="hidden p-4 mb-6 bg-indigo-50 border border-indigo-200 text-indigo-800 rounded-xl shadow-sm">
                     <div class="flex justify-between items-start">
                         <div>
@@ -113,11 +124,12 @@
                         <button id="close-reminder" class="text-indigo-500 hover:text-indigo-700 text-2xl leading-none">&times;</button>
                     </div>
                 </div>
-                <h2 class="text-xl font-semibold mb-4 text-gray-700">What would you like to manage?</h2>
-                <div class="grid grid-cols-1 gap-4">
-                    <button data-page="maid-tracker-page" class="page-btn w-full text-white font-bold py-5 px-4 rounded-xl shadow-md">Maid Tracker</button>
-                    <button data-page="milk-tracker-page" class="page-btn w-full text-white font-bold py-5 px-4 rounded-xl shadow-md">Milk Tracker</button>
-                    <button class="w-full bg-gray-300 text-gray-500 font-bold py-5 px-4 rounded-xl cursor-not-allowed">Expense Tracker (Coming Soon)</button>
+                <div class="flex-grow flex flex-col justify-center">
+                    <div class="grid grid-cols-1 gap-5">
+                        <button data-page="maid-tracker-page" class="page-btn w-full text-white font-bold py-5 px-4 rounded-xl shadow-md">Maid Tracker</button>
+                        <button data-page="milk-tracker-page" class="page-btn w-full text-white font-bold py-5 px-4 rounded-xl shadow-md">Milk Tracker</button>
+                        <button class="w-full bg-gray-300 text-gray-500 font-bold py-5 px-4 rounded-xl cursor-not-allowed">Expense Tracker (Coming Soon)</button>
+                    </div>
                 </div>
             </main>
 
@@ -171,6 +183,11 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Footer -->
+        <footer class="text-center text-gray-400 text-sm py-4 mt-auto">
+            Made with ❤️ by Raghav
+        </footer>
     </div>
 
     <!-- Modals -->

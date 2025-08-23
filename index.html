@@ -7,8 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Firebase Libraries -->
-   <script src="firebase-config.js"></script>
+    <!-- Firebase Configuration (from local file) -->
+    <script src="firebase-config.js" defer></script>
     
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -19,7 +19,7 @@
         .modal-content { transform: scale(0.95); transition: transform 0.3s ease; }
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type=number] { -appearance: textfield; }
+        input[type=number] { -moz-appearance: textfield; }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -27,20 +27,12 @@
     <div id="app-container" class="max-w-lg mx-auto p-4 min-h-screen bg-white shadow-md">
 
         <!-- Login Page -->
-        <div id="login-page">
-            <h1 class="text-3xl font-bold text-gray-900 text-center mb-8">Home Hub Login</h1>
-            <form id="login-form" class="space-y-4">
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="email" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" id="password" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-                <p id="login-error" class="text-sm text-red-600 hidden"></p>
-                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-blue-700">Sign In</button>
-            </form>
+        <div id="login-page" class="flex flex-col items-center justify-center h-screen">
+            <h1 class="text-3xl font-bold text-gray-900 text-center mb-8">Home Hub</h1>
+            <button id="google-signin-btn" class="flex items-center justify-center w-full max-w-xs bg-white border border-gray-300 rounded-lg shadow-sm px-6 py-3 text-sm font-medium text-gray-800 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg class="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571l6.19,5.238C42.021,35.596,44,30.138,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path></svg>
+                <span>Sign in with Google</span>
+            </button>
         </div>
 
         <!-- Main App Content (Initially Hidden) -->
@@ -72,72 +64,138 @@
                 </div>
                 <h2 class="text-xl font-semibold mb-4 text-gray-700">What would you like to manage?</h2>
                 <div class="grid grid-cols-1 gap-4">
-                    <button data-page="maid-tracker" class="page-btn w-full bg-blue-600 text-white font-bold py-4 px-4 rounded-lg shadow-md hover:bg-blue-700">Maid Tracker</button>
-                    <button data-page="milk-tracker" class="page-btn w-full bg-green-600 text-white font-bold py-4 px-4 rounded-lg shadow-md hover:bg-green-700">Milk Tracker</button>
+                    <button data-page="maid-tracker-page" class="page-btn w-full bg-blue-600 text-white font-bold py-4 px-4 rounded-lg shadow-md hover:bg-blue-700">Maid Tracker</button>
+                    <button data-page="milk-tracker-page" class="page-btn w-full bg-green-600 text-white font-bold py-4 px-4 rounded-lg shadow-md hover:bg-green-700">Milk Tracker</button>
                     <button class="w-full bg-gray-400 text-white font-bold py-4 px-4 rounded-lg cursor-not-allowed">Expense Tracker (Coming Soon)</button>
                 </div>
             </main>
 
-            <div id="maid-tracker-page" class="page hidden"></div>
-            <div id="milk-tracker-page" class="page hidden"></div>
+            <!-- Maid Tracker Page -->
+            <div id="maid-tracker-page" class="page hidden">
+                <div class="flex items-center justify-between mb-4">
+                    <button class="prev-month p-2 rounded-full hover:bg-gray-200">&lt;</button>
+                    <h2 class="month-year text-xl font-bold"></h2>
+                    <button class="next-month p-2 rounded-full hover:bg-gray-200">&gt;</button>
+                </div>
+                <div class="calendar-grid text-center font-medium text-sm text-gray-500 mb-2">
+                    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                </div>
+                <div class="calendar calendar-grid"></div>
+                <div class="summary mt-8 pt-6 border-t">
+                    <h3 class="text-lg font-semibold mb-3 text-gray-800">Monthly Summary</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center p-3 bg-green-100 rounded-lg"><span class="font-medium text-green-800">Cleaned Days</span><span class="cleaned-count font-bold text-lg text-green-900">0</span></div>
+                        <div class="flex justify-between items-center p-3 bg-red-100 rounded-lg"><span class="font-medium text-red-800">Absent Days</span><span class="absent-count font-bold text-lg text-red-900">0</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Milk Tracker Page -->
+            <div id="milk-tracker-page" class="page hidden">
+                <div class="flex items-center justify-between mb-4">
+                    <button class="prev-month p-2 rounded-full hover:bg-gray-200">&lt;</button>
+                    <h2 class="month-year text-xl font-bold"></h2>
+                    <button class="next-month p-2 rounded-full hover:bg-gray-200">&gt;</button>
+                </div>
+                <div class="calendar-grid text-center font-medium text-sm text-gray-500 mb-2">
+                    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                </div>
+                <div class="calendar calendar-grid"></div>
+                <div class="mt-8 pt-6 border-t">
+                    <h3 class="text-lg font-semibold mb-3 text-gray-800">Settings</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label for="milk-cost" class="block text-sm font-medium text-gray-700">Cost per Milk Packet</label><input type="number" id="milk-cost" class="setting-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"></div>
+                        <div><label for="curd-cost" class="block text-sm font-medium text-gray-700">Cost per Curd Unit</label><input type="number" id="curd-cost" class="setting-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"></div>
+                    </div>
+                    <div class="mt-4"><label for="milk-default-packets" class="block text-sm font-medium text-gray-700">Default Milk Packets</label><input type="number" id="milk-default-packets" class="setting-input mt-1 block w-full max-w-xs px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"></div>
+                </div>
+                <div class="summary mt-6 pt-6 border-t">
+                    <h3 class="text-lg font-semibold mb-3 text-gray-800">Monthly Expense Summary</h3>
+                    <div class="space-y-2">
+                        <div class="p-3 bg-blue-100 rounded-lg"><div class="flex justify-between items-center"><span class="font-medium text-blue-800">Milk Packets</span><span class="milk-count font-bold text-lg text-blue-900">0</span></div><div class="flex justify-between items-center text-sm mt-1"><span class="text-blue-700">Total Milk Cost</span><span class="milk-total-cost font-medium text-blue-800">₹0.00</span></div></div>
+                        <div class="p-3 bg-yellow-100 rounded-lg"><div class="flex justify-between items-center"><span class="font-medium text-yellow-800">Curd Units</span><span class="curd-count font-bold text-lg text-yellow-900">0</span></div><div class="flex justify-between items-center text-sm mt-1"><span class="text-yellow-700">Total Curd Cost</span><span class="curd-total-cost font-medium text-yellow-800">₹0.00</span></div></div>
+                        <div class="p-3 bg-gray-200 rounded-lg"><div class="flex justify-between items-center"><span class="font-medium text-gray-800">Days Not Delivered</span><span class="not-delivered-count font-bold text-lg text-gray-900">0</span></div></div>
+                        <div class="flex justify-between items-center p-4 bg-gray-800 text-white rounded-lg mt-4"><span class="font-bold text-lg">Grand Total</span><span class="grand-total font-bold text-xl">₹0.00</span></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Modals -->
-    <div id="maid-status-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden pointer-events-none opacity-0"></div>
-    <div id="milk-status-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden pointer-events-none opacity-0"></div>
+    <div id="maid-status-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden pointer-events-none opacity-0">
+        <div class="modal-content bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+            <h3 class="text-xl font-bold text-center mb-6">Update Status for <span class="modal-date"></span></h3>
+            <div class="grid grid-cols-1 gap-3">
+                <button data-status="cleaned" class="status-btn w-full bg-green-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-600">Cleaned</button>
+                <button data-status="absent" class="status-btn w-full bg-red-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-red-600">Absent</button>
+                <button data-status="none" class="status-btn w-full bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-300 mt-4">Clear Status</button>
+            </div>
+        </div>
+    </div>
+    <div id="milk-status-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden pointer-events-none opacity-0">
+        <div class="modal-content bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+            <h3 class="text-xl font-bold text-center mb-6">Update Delivery for <span class="modal-date"></span></h3>
+            <div class="space-y-4">
+                <div><label for="milk-packets" class="block text-sm font-medium text-gray-700">Milk Packets</label><input type="number" id="milk-packets" min="0" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"></div>
+                <div><label for="curd-units" class="block text-sm font-medium text-gray-700">Curd Units</label><input type="number" id="curd-units" min="0" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"></div>
+            </div>
+            <div class="mt-6 grid grid-cols-1 gap-3">
+                <button id="save-milk-entry" class="w-full bg-green-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-600">Save Delivery</button>
+                <button id="not-delivered-entry" class="w-full bg-gray-400 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-500">Mark as Not Delivered</button>
+                <button id="clear-milk-entry" class="w-full bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-300 mt-2">Clear Entry</button>
+            </div>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
         import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
 
-        const app = initializeApp(window.firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
+        function startApp() {
+            if (typeof window.firebaseConfig === 'undefined') {
+                console.error("Firebase config object not found. Make sure firebase-config.js is loaded correctly and is in the same folder as your HTML file.");
+                alert("CRITICAL ERROR: Could not load app configuration. The app cannot start.");
+                return;
+            }
 
-        document.addEventListener('DOMContentLoaded', () => {
+            const app = initializeApp(window.firebaseConfig);
+            const db = getFirestore(app);
+            const auth = getAuth(app);
+
             // --- DOM ELEMENTS ---
             const loginPage = document.getElementById('login-page');
             const mainApp = document.getElementById('main-app');
-            const loginForm = document.getElementById('login-form');
-            const loginError = document.getElementById('login-error');
+            const googleSignInBtn = document.getElementById('google-signin-btn');
             const signOutBtn = document.getElementById('sign-out-btn');
             
             // --- GLOBAL STATE ---
             let maidData = {}, milkData = {}, settingsData = { milkCost: 30, curdCost: 25, milkDefault: 1 };
             let currentDate = new Date(), selectedDayElement = null, activeTracker = null;
-            let unsubMaid, unsubMilk, unsubSettings; // To hold our listener functions
+            let unsubMaid, unsubMilk, unsubSettings;
 
             // --- AUTHENTICATION LOGIC ---
             onAuthStateChanged(auth, user => {
                 if (user) {
-                    // User is signed in
                     loginPage.classList.add('hidden');
                     mainApp.classList.remove('hidden');
                     initializeAppLogic();
                 } else {
-                    // User is signed out
                     mainApp.classList.add('hidden');
                     loginPage.classList.remove('hidden');
-                    // Stop listening to data when logged out to save resources
                     if (unsubMaid) unsubMaid();
                     if (unsubMilk) unsubMilk();
                     if (unsubSettings) unsubSettings();
                 }
             });
 
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
+            googleSignInBtn.addEventListener('click', async () => {
+                const provider = new GoogleAuthProvider();
                 try {
-                    await signInWithEmailAndPassword(auth, email, password);
-                    loginError.classList.add('hidden');
+                    await signInWithPopup(auth, provider);
                 } catch (error) {
-                    loginError.textContent = "Error: Invalid email or password.";
-                    loginError.classList.remove('hidden');
-                    console.error("Login failed:", error);
+                    console.error("Google Sign-In failed:", error);
                 }
             });
 
@@ -154,11 +212,11 @@
                 // --- DATA LISTENERS ---
                 unsubMaid = onSnapshot(doc(db, "trackers", "maid"), (doc) => {
                     maidData = doc.exists() ? doc.data() : {};
-                    if (activeTracker === 'maid') renderCalendar();
+                    if (activeTracker === 'maid-tracker-page') renderCalendar();
                 });
                 unsubMilk = onSnapshot(doc(db, "trackers", "milk"), (doc) => {
                     milkData = doc.exists() ? doc.data() : {};
-                    if (activeTracker === 'milk') renderCalendar();
+                    if (activeTracker === 'milk-tracker-page') renderCalendar();
                 });
                 unsubSettings = onSnapshot(doc(db, "trackers", "settings"), (doc) => {
                     if (doc.exists()) {
@@ -167,65 +225,19 @@
                     }
                 });
 
-                // --- TEMPLATES (same as before) ---
-                const createTrackerPageHTML = (trackerType) => {
-                    const isMaid = trackerType === 'maid';
-                    return `
-                        <div class="flex items-center justify-between mb-4">
-                            <button class="prev-month p-2 rounded-full hover:bg-gray-200">&lt;</button>
-                            <h2 class="month-year text-xl font-bold"></h2>
-                            <button class="next-month p-2 rounded-full hover:bg-gray-200">&gt;</button>
-                        </div>
-                        <div class="calendar-grid text-center font-medium text-sm text-gray-500 mb-2">
-                            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
-                        </div>
-                        <div class="calendar calendar-grid"></div>
-                        ${isMaid ? createMaidSummaryHTML() : createMilkSettingsAndSummaryHTML()}
-                    `;
-                };
-                const createMaidSummaryHTML = () => `
-                    <div class="summary mt-8 pt-6 border-t">
-                         <h3 class="text-lg font-semibold mb-3 text-gray-800">Monthly Summary</h3>
-                         <div class="space-y-2">
-                            <div class="flex justify-between items-center p-3 bg-green-100 rounded-lg"><span class="font-medium text-green-800">Cleaned Days</span><span class="cleaned-count font-bold text-lg text-green-900">0</span></div>
-                            <div class="flex justify-between items-center p-3 bg-red-100 rounded-lg"><span class="font-medium text-red-800">Absent Days</span><span class="absent-count font-bold text-lg text-red-900">0</span></div>
-                         </div>
-                    </div>`;
-                const createMilkSettingsAndSummaryHTML = () => `
-                    <div class="mt-8 pt-6 border-t">
-                        <h3 class="text-lg font-semibold mb-3 text-gray-800">Settings</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div><label for="milk-cost" class="block text-sm font-medium text-gray-700">Cost per Milk Packet</label><input type="number" id="milk-cost" value="${settingsData.milkCost}" class="setting-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"></div>
-                            <div><label for="curd-cost" class="block text-sm font-medium text-gray-700">Cost per Curd Unit</label><input type="number" id="curd-cost" value="${settingsData.curdCost}" class="setting-input mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"></div>
-                        </div>
-                        <div class="mt-4"><label for="milk-default-packets" class="block text-sm font-medium text-gray-700">Default Milk Packets</label><input type="number" id="milk-default-packets" value="${settingsData.milkDefault}" class="setting-input mt-1 block w-full max-w-xs px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"></div>
-                    </div>
-                    <div class="summary mt-6 pt-6 border-t">
-                         <h3 class="text-lg font-semibold mb-3 text-gray-800">Monthly Expense Summary</h3>
-                         <div class="space-y-2">
-                            <div class="p-3 bg-blue-100 rounded-lg"><div class="flex justify-between items-center"><span class="font-medium text-blue-800">Milk Packets</span><span class="milk-count font-bold text-lg text-blue-900">0</span></div><div class="flex justify-between items-center text-sm mt-1"><span class="text-blue-700">Total Milk Cost</span><span class="milk-total-cost font-medium text-blue-800">₹0.00</span></div></div>
-                            <div class="p-3 bg-yellow-100 rounded-lg"><div class="flex justify-between items-center"><span class="font-medium text-yellow-800">Curd Units</span><span class="curd-count font-bold text-lg text-yellow-900">0</span></div><div class="flex justify-between items-center text-sm mt-1"><span class="text-yellow-700">Total Curd Cost</span><span class="curd-total-cost font-medium text-yellow-800">₹0.00</span></div></div>
-                            <div class="flex justify-between items-center p-4 bg-gray-800 text-white rounded-lg mt-4"><span class="font-bold text-lg">Grand Total</span><span class="grand-total font-bold text-xl">₹0.00</span></div>
-                         </div>
-                    </div>`;
-                const createMaidModalHTML = () => `<div class="modal-content bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm"><h3 class="text-xl font-bold text-center mb-6">Update Status for <span class="modal-date"></span></h3><div class="grid grid-cols-1 gap-3"><button data-status="cleaned" class="status-btn w-full bg-green-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-600">Cleaned</button><button data-status="absent" class="status-btn w-full bg-red-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-red-600">Absent</button><button data-status="none" class="status-btn w-full bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-300 mt-4">Clear Status</button></div></div>`;
-                const createMilkModalHTML = () => `<div class="modal-content bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm"><h3 class="text-xl font-bold text-center mb-6">Update Delivery for <span class="modal-date"></span></h3><div class="space-y-4"><div><label for="milk-packets" class="block text-sm font-medium text-gray-700">Milk Packets</label><input type="number" id="milk-packets" min="0" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"></div><div><label for="curd-units" class="block text-sm font-medium text-gray-700">Curd Units</label><input type="number" id="curd-units" min="0" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"></div></div><div class="mt-6 grid grid-cols-2 gap-3"><button id="clear-milk-entry" class="w-full bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-300">Clear</button><button id="save-milk-entry" class="w-full bg-green-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-600">Save</button></div></div>`;
-
                 // --- NAVIGATION ---
                 const showPage = (pageId) => {
                     document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
                     homePage.classList.add('hidden');
                     const pageToShow = document.getElementById(pageId);
                     if (pageToShow) {
-                        activeTracker = pageId.split('-')[0];
-                        pageToShow.innerHTML = createTrackerPageHTML(activeTracker);
-                        document.getElementById(`${activeTracker}-status-modal`).innerHTML = activeTracker === 'maid' ? createMaidModalHTML() : createMilkModalHTML();
+                        activeTracker = pageId;
                         pageToShow.classList.remove('hidden');
                         backToHomeBtn.classList.remove('hidden');
-                        pageTitle.textContent = `${activeTracker.charAt(0).toUpperCase() + activeTracker.slice(1)} Tracker`;
+                        const title = pageId.split('-')[0];
+                        pageTitle.textContent = `${title.charAt(0).toUpperCase() + title.slice(1)} Tracker`;
                         currentDate = new Date();
                         renderCalendar();
-                        addPageEventListeners(pageToShow);
                     }
                 };
                 const showHomePage = () => {
@@ -236,20 +248,20 @@
                     activeTracker = null;
                     checkBillReminders();
                 };
-                document.querySelectorAll('.page-btn').forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.page + '-page')));
+                document.querySelectorAll('.page-btn').forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.page)));
                 backToHomeBtn.addEventListener('click', showHomePage);
 
-                // --- CALENDAR LOGIC (same as before) ---
+                // --- CALENDAR LOGIC ---
                 const renderCalendar = () => {
                     if (!activeTracker) return;
-                    const page = document.getElementById(`${activeTracker}-tracker-page`);
+                    const page = document.getElementById(activeTracker);
                     const calendarEl = page.querySelector('.calendar');
                     const monthYearEl = page.querySelector('.month-year');
                     calendarEl.innerHTML = '';
                     const year = currentDate.getFullYear();
                     const month = currentDate.getMonth();
                     const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
-                    const data = activeTracker === 'maid' ? maidData : milkData;
+                    const data = activeTracker === 'maid-tracker-page' ? maidData : milkData;
                     const monthData = data[monthKey] || {};
                     monthYearEl.textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
                     const firstDayOfMonth = new Date(year, month, 1).getDay();
@@ -264,71 +276,69 @@
                         if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) dayEl.classList.add('border-blue-500', 'text-blue-600');
                         else dayEl.classList.add('border-gray-200');
                         updateDayElement(dayEl, monthData[day]);
-                        dayEl.addEventListener('click', () => {
-                            selectedDayElement = dayEl;
-                            openStatusModal(day);
-                        });
+                        dayEl.addEventListener('click', () => { selectedDayElement = dayEl; openStatusModal(day); });
                         calendarEl.appendChild(dayEl);
                     }
                     updateSummary(monthData);
                 };
                 const updateDayElement = (element, status) => {
-                    element.classList.remove('bg-green-500', 'bg-red-500', 'text-white', 'bg-blue-500');
-                    if (activeTracker === 'maid') {
+                    element.classList.remove('bg-green-500', 'bg-red-500', 'text-white', 'bg-blue-500', 'bg-gray-400');
+                    if (activeTracker === 'maid-tracker-page') {
                         if (status === 'cleaned') element.classList.add('bg-green-500', 'text-white');
                         else if (status === 'absent') element.classList.add('bg-red-500', 'text-white');
-                    } else if (activeTracker === 'milk') {
-                        if (status && (status.milk > 0 || status.curd > 0)) element.classList.add('bg-blue-500', 'text-white');
+                    } else if (activeTracker === 'milk-tracker-page') {
+                        if (status?.status === 'not-delivered') {
+                            element.classList.add('bg-gray-400', 'text-white');
+                        } else if (status && (status.milk > 0 || status.curd > 0)) {
+                            element.classList.add('bg-blue-500', 'text-white');
+                        }
                     }
                 };
 
                 // --- EVENT LISTENERS ---
-                function addPageEventListeners(page) {
-                    page.querySelector('.prev-month').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
-                    page.querySelector('.next-month').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
-                    if (activeTracker === 'milk') {
-                        page.querySelectorAll('.setting-input').forEach(input => {
-                            input.addEventListener('change', async () => {
-                                const newSettings = {
-                                    milkCost: parseFloat(page.querySelector('#milk-cost').value) || 0,
-                                    curdCost: parseFloat(page.querySelector('#curd-cost').value) || 0,
-                                    milkDefault: parseInt(page.querySelector('#milk-default-packets').value) || 0
-                                };
-                                await setDoc(doc(db, "trackers", "settings"), newSettings, { merge: true });
-                            });
-                        });
-                    }
-                }
+                document.querySelectorAll('.page').forEach(page => {
+                    page.querySelector('.prev-month')?.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
+                    page.querySelector('.next-month')?.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+                });
+                document.querySelectorAll('#milk-tracker-page .setting-input').forEach(input => {
+                    input.addEventListener('change', async () => {
+                        const newSettings = {
+                            milkCost: parseFloat(document.getElementById('milk-cost').value) || 0,
+                            curdCost: parseFloat(document.getElementById('curd-cost').value) || 0,
+                            milkDefault: parseInt(document.getElementById('milk-default-packets').value) || 0
+                        };
+                        await setDoc(doc(db, "trackers", "settings"), newSettings, { merge: true });
+                    });
+                });
+
                 const openStatusModal = (day) => {
-                    const modal = document.getElementById(`${activeTracker}-status-modal`);
+                    const modalId = activeTracker === 'maid-tracker-page' ? 'maid-status-modal' : 'milk-status-modal';
+                    const modal = document.getElementById(modalId);
                     modal.querySelector('.modal-date').textContent = `${day} ${currentDate.toLocaleString('default', { month: 'long' })}`;
-                    if (activeTracker === 'milk') {
+                    if (activeTracker === 'milk-tracker-page') {
                         const monthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
                         const dayData = milkData[monthKey]?.[day];
-                        const milkInput = modal.querySelector('#milk-packets');
-                        const curdInput = modal.querySelector('#curd-units');
-                        if (dayData) {
-                            milkInput.value = dayData.milk || 0;
-                            curdInput.value = dayData.curd || 0;
-                        } else {
-                            milkInput.value = settingsData.milkDefault || 0;
-                            curdInput.value = 0;
-                        }
+                        document.getElementById('milk-packets').value = dayData?.milk ?? settingsData.milkDefault;
+                        document.getElementById('curd-units').value = dayData?.curd || 0;
                     }
-                    modal.classList.remove('hidden');
+                    modal.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
+                    modal.querySelector('.modal-content').classList.remove('scale-95');
                     document.body.style.overflow = 'hidden';
-                    setTimeout(() => { modal.classList.remove('pointer-events-none', 'opacity-0'); modal.querySelector('.modal-content').classList.remove('scale-95'); }, 10);
                 };
                 const closeStatusModal = (modal) => {
                     modal.classList.add('opacity-0');
                     modal.querySelector('.modal-content').classList.add('scale-95');
-                    document.body.style.overflow = 'auto';
-                    setTimeout(() => { modal.classList.add('hidden', 'pointer-events-none'); }, 300);
+                    setTimeout(() => { modal.classList.add('hidden', 'pointer-events-none'); document.body.style.overflow = 'auto'; }, 300);
                 };
-                document.getElementById('app-container').addEventListener('click', async (e) => {
-                    const modal = e.target.closest('.modal');
-                    if (modal && e.target === modal) { closeStatusModal(modal); return; }
-                    if (e.target.matches('#maid-status-modal .status-btn')) {
+                
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) closeStatusModal(modal);
+                    });
+                });
+
+                document.getElementById('maid-status-modal').addEventListener('click', async (e) => {
+                    if (e.target.matches('.status-btn')) {
                         const status = e.target.dataset.status;
                         const day = selectedDayElement.dataset.day;
                         const monthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
@@ -338,50 +348,65 @@
                         await setDoc(doc(db, "trackers", "maid"), maidData);
                         closeStatusModal(e.target.closest('.modal'));
                     }
-                    if (e.target.matches('#save-milk-entry, #clear-milk-entry')) {
+                });
+
+                document.getElementById('milk-status-modal').addEventListener('click', async (e) => {
+                     if (e.target.matches('#save-milk-entry, #clear-milk-entry, #not-delivered-entry')) {
                         const day = selectedDayElement.dataset.day;
                         const monthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
                         milkData[monthKey] = milkData[monthKey] || {};
-                        if (e.target.id === 'clear-milk-entry') delete milkData[monthKey][day];
-                        else {
+                        
+                        if (e.target.id === 'clear-milk-entry') {
+                            delete milkData[monthKey][day];
+                        } else if (e.target.id === 'not-delivered-entry') {
+                            milkData[monthKey][day] = { status: 'not-delivered', milk: 0, curd: 0 };
+                        } else {
                             const milkQty = parseInt(document.getElementById('milk-packets').value) || 0;
                             const curdQty = parseInt(document.getElementById('curd-units').value) || 0;
-                            if (milkQty > 0 || curdQty > 0) milkData[monthKey][day] = { milk: milkQty, curd: curdQty };
-                            else delete milkData[monthKey][day];
+                            if (milkQty > 0 || curdQty > 0) {
+                                milkData[monthKey][day] = { milk: milkQty, curd: curdQty };
+                            } else {
+                                delete milkData[monthKey][day];
+                            }
                         }
                         await setDoc(doc(db, "trackers", "milk"), milkData);
                         closeStatusModal(e.target.closest('.modal'));
                     }
                 });
                 
-                // --- SUMMARY & BILLS (same as before) ---
+                // --- SUMMARY & BILLS ---
                 const updateSummary = (monthData) => {
-                     const page = document.getElementById(`${activeTracker}-tracker-page`);
+                     const page = document.getElementById(activeTracker);
                      if (!page || !page.querySelector('.summary')) return;
-                     if (activeTracker === 'maid') {
+                     if (activeTracker === 'maid-tracker-page') {
                         const cleaned = Object.values(monthData || {}).filter(s => s === 'cleaned').length;
                         const absent = Object.values(monthData || {}).filter(s => s === 'absent').length;
                         page.querySelector('.cleaned-count').textContent = cleaned;
                         page.querySelector('.absent-count').textContent = absent;
-                     } else if (activeTracker === 'milk') {
+                     } else if (activeTracker === 'milk-tracker-page') {
                         const totals = calculateMilkTotals(monthData);
                         page.querySelector('.milk-count').textContent = totals.totalMilk;
                         page.querySelector('.curd-count').textContent = totals.totalCurd;
+                        page.querySelector('.not-delivered-count').textContent = totals.notDeliveredDays;
                         page.querySelector('.milk-total-cost').textContent = `₹${totals.totalMilkCost.toFixed(2)}`;
                         page.querySelector('.curd-total-cost').textContent = `₹${totals.totalCurdCost.toFixed(2)}`;
                         page.querySelector('.grand-total').textContent = `₹${totals.grandTotal.toFixed(2)}`;
                      }
                 };
-                const calculateMilkTotals = (monthData) => {
-                    let totalMilk = 0, totalCurd = 0;
+                const calculateMilkTotals = (monthData = {}) => {
+                    let totalMilk = 0, totalCurd = 0, notDeliveredDays = 0;
                     for (const day in monthData) {
-                        totalMilk += monthData[day]?.milk || 0;
-                        totalCurd += monthData[day]?.curd || 0;
+                        if(monthData[day]?.status === 'not-delivered') {
+                            notDeliveredDays++;
+                        } else {
+                            totalMilk += monthData[day]?.milk || 0;
+                            totalCurd += monthData[day]?.curd || 0;
+                        }
                     }
                     const totalMilkCost = totalMilk * settingsData.milkCost;
                     const totalCurdCost = totalCurd * settingsData.curdCost;
                     const grandTotal = totalMilkCost + totalCurdCost;
-                    return { totalMilk, totalCurd, totalMilkCost, totalCurdCost, grandTotal };
+                    return { totalMilk, totalCurd, notDeliveredDays, totalMilkCost, totalCurdCost, grandTotal };
                 };
                 const checkBillReminders = () => {
                     const billReminder = document.getElementById('bill-reminder');
@@ -409,8 +434,16 @@
 
                 // --- INITIALIZATION ---
                 showHomePage();
+                
+                // Update settings inputs with loaded data
+                document.getElementById('milk-cost').value = settingsData.milkCost;
+                document.getElementById('curd-cost').value = settingsData.curdCost;
+                document.getElementById('milk-default-packets').value = settingsData.milkDefault;
             }
-        });
+        }
+
+        // --- Start the application ---
+        window.addEventListener('load', startApp);
     </script>
 </body>
 </html>

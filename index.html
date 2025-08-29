@@ -296,7 +296,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, setDoc, collection, addDoc, query, orderBy, where } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+      import { getFirestore, doc, onSnapshot, setDoc, collection, addDoc, query, orderBy, where, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
 
         function startApp() {
@@ -321,6 +321,7 @@
             let maidData = {}, milkData = {}, settingsData = { milkCost: 30, curdCost: 25, milkDefault: 1 }, expenses = [];
             let currentDate = new Date(), selectedDayElement = null, activeTracker = null;
             let unsubMaid, unsubMilk, unsubSettings, unsubExpenses;
+            let editingExpenseId = null;
 
             // --- AUTHENTICATION LOGIC ---
             onAuthStateChanged(auth, user => {
@@ -350,7 +351,7 @@
                 const pageTitle = document.getElementById('page-title');
                 const homePage = document.getElementById('home-page');
                 const backToHomeBtn = document.getElementById('back-to-home');
-
+                const expenseList = document.getElementById('expense-list');
                 // --- DATA LISTENERS ---
                 unsubMaid = onSnapshot(doc(db, "trackers", "maid"), (doc) => { 
                     maidData = doc.exists() ? doc.data() : {}; 
@@ -377,6 +378,34 @@
                         renderExpenses();
                     } else if (activeTracker === null) {
                         renderDashboard(); // Add this line
+                    }
+                });
+                
+                expenseList.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const menuButton = e.target.closest('[data-expense-menu]');
+                    const editButton = e.target.closest('[data-edit-id]');
+                    const deleteButton = e.target.closest('[data-delete-id]');
+
+                    // Toggle the dropdown menu
+                    if (menuButton) {
+                        const expenseId = menuButton.dataset.expenseMenu;
+                        const menu = document.getElementById(`menu-${expenseId}`);
+                        if (menu) {
+                            // Hide all other open menus first
+                            document.querySelectorAll('[id^="menu-"]').forEach(m => {
+                                if (m.id !== menu.id) m.classList.add('hidden');
+                            });
+                            menu.classList.toggle('hidden');
+                        }
+                    }
+
+                    // Handle Edit and Delete Clicks
+                    if (editButton) {
+                        handleEditExpense(editButton.dataset.editId);
+                    }
+                    if (deleteButton) {
+                        handleDeleteExpense(deleteButton.dataset.deleteId);
                     }
                 });
 
@@ -430,7 +459,7 @@
                     const user = auth.currentUser;
                     if (!user) return;
 
-                    const newExpense = {
+                    const expenseData = {
                         summary: document.getElementById('expense-summary').value,
                         amount: parseFloat(document.getElementById('expense-amount').value),
                         category: document.getElementById('expense-category').value,
@@ -438,8 +467,22 @@
                         addedBy: user.displayName || 'Unknown User',
                         uid: user.uid
                     };
-                    await addDoc(collection(db, "expenses"), newExpense);
+
+                    if (editingExpenseId) {
+                        // This is an update to an existing expense
+                        const expenseDocRef = doc(db, 'expenses', editingExpenseId);
+                        await updateDoc(expenseDocRef, expenseData);
+                    } else {
+                        // This is a new expense
+                        await addDoc(collection(db, "expenses"), expenseData);
+                    }
+
                     closeModal(expenseModal);
+                    expenseForm.reset();
+                    editingExpenseId = null; // Reset the editing ID
+                    // Reset modal title and button text
+                    expenseModal.querySelector('h3').textContent = 'Add New Expense';
+                    expenseModal.querySelector('button[type="submit"]').textContent = 'Add Expense';
                 });
 
                 // Replace the entire renderExpenses function
@@ -487,24 +530,65 @@
                                 // Use summary-card for consistent styling
                                 div.className = "summary-card flex items-center justify-between"; 
                                 div.innerHTML = `
-                                    <div class="flex items-center gap-4">
-                                        <div class="flex-shrink-0">
-                                            <span class="text-2xl">${exp.category.charAt(0)}</span>
-                                        </div>
-                                        <div>
-                                            <p class="font-semibold text-slate-800">${exp.summary}</p>
-                                            <div class="flex items-baseline gap-2 mt-1">
-                                                ${getCategoryBadge(exp.category)}
-                                                <p class="text-xs text-slate-400">by ${exp.addedBy.split(' ')[0]}</p>
-                                            </div>
-                                        </div>
+                            <div class="flex items-center gap-4 flex-grow">
+                                <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-slate-200 rounded-full">
+                                    <span class="text-lg font-bold text-slate-600">${exp.category.charAt(0)}</span>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-slate-800">${exp.summary}</p>
+                                    <div class="flex items-baseline gap-2 mt-1">
+                                        ${getCategoryBadge(exp.category)}
+                                        <p class="text-xs text-slate-400">by ${exp.addedBy.split(' ')[0]}</p>
                                     </div>
-                                    <p class="font-bold text-lg text-slate-900">₹${exp.amount.toFixed(2)}</p>
-                                `;
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <p class="font-bold text-lg text-slate-900">₹${exp.amount.toFixed(2)}</p>
+                                <div class="relative">
+                                    <button data-expense-menu="${exp.id}" class="p-2 rounded-full hover:bg-slate-200">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500" viewBox="0 0 20 20" fill="currentColor"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg>
+                                    </button>
+                                    <div id="menu-${exp.id}" class="hidden absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg z-10 border">
+                                        <a href="#" data-edit-id="${exp.id}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100">Edit</a>
+                                        <a href="#" data-delete-id="${exp.id}" class="block px-4 py-2 text-sm text-red-600 hover:bg-slate-100">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+`;
                                 expenseList.appendChild(div);
                             });
                         }
                     }
+                function handleEditExpense(id) {
+                    const expenseToEdit = expenses.find(exp => exp.id === id);
+                    if (!expenseToEdit) return;
+
+                    editingExpenseId = id; // Set the ID of the expense being edited
+
+                    // Pre-fill the modal form
+                    document.getElementById('expense-summary').value = expenseToEdit.summary;
+                    document.getElementById('expense-amount').value = expenseToEdit.amount;
+                    document.getElementById('expense-category').value = expenseToEdit.category;
+                    document.getElementById('expense-date').value = expenseToEdit.date;
+
+                    // Change modal title and button text for editing
+                    expenseModal.querySelector('h3').textContent = 'Edit Expense';
+                    expenseModal.querySelector('button[type="submit"]').textContent = 'Save Changes';
+
+                    openModal(expenseModal);
+                }
+
+                async function handleDeleteExpense(id) {
+                    if (confirm('Are you sure you want to delete this expense?')) {
+                        try {
+                            const expenseDocRef = doc(db, 'expenses', id);
+                            await deleteDoc(expenseDocRef);
+                            // The onSnapshot listener will automatically re-render the list.
+                        } catch (error) {
+                            console.error("Error deleting document: ", error);
+                        }
+                    }
+                }    
                 function getCategoryBadge(category) {
                     const colors = {
                         'Groceries': 'bg-green-100 text-green-800',

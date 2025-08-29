@@ -81,6 +81,7 @@
             <h1 class="text-4xl font-bold text-gray-900 text-center mb-2">Welcome to</h1>
             <h2 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500 text-center mb-10">Home Hub</h2>
             <button id="google-signin-btn" class="flex items-center justify-center w-full max-w-xs bg-white border border-gray-300 rounded-lg shadow-sm px-6 py-3 text-sm font-medium text-gray-800 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-105">
+                <svg class="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571l6.19,5.238C42.021,35.596,44,30.138,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path></svg>
                 <span>Sign in with Google</span>
             </button>
         </div>
@@ -96,6 +97,17 @@
             </header>
 
             <main id="home-page" class="flex-grow flex flex-col h-full">
+                <div class="w-full max-w-sm mx-auto my-8">
+                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#A5B4FC" d="M44.4,-51.9C57.2,-41.2,67.1,-27.1,71.2,-11.1C75.3,4.9,73.6,22.8,64.8,36.2C56,49.6,40.1,58.5,24.3,64.2C8.5,69.9,-7.2,72.4,-21.8,68.4C-36.4,64.4,-50,53.9,-58.8,40.6C-67.6,27.3,-71.7,11.2,-69.5,-3.8C-67.3,-18.8,-58.8,-32.7,-47.5,-43.5C-36.2,-54.3,-22.1,-62,-7.5,-60.9C7.2,-59.8,14.4,-50.1,24.4,-49.2C34.4,-48.4,44.4,-51.9,44.4,-51.9" transform="translate(100 100) scale(1.2)" />
+                        <g transform="translate(100 100)">
+                            <path d="M-20,-20 L20,-20 L20,10 L30,10 L0,-20 L-30,10 L-20,10 Z" fill="white" stroke="#4F46E5" stroke-width="3" />
+                            <rect x="-15" y="10" width="30" height="20" fill="white" stroke="#4F46E5" stroke-width="3" />
+                            <rect x="-5" y="15" width="10" height="15" fill="#C7D2FE" />
+                        </g>
+                    </svg>
+                </div>
+
                 <div id="bill-reminder" class="hidden p-4 mb-6 bg-indigo-50 border border-indigo-200 text-indigo-800 rounded-xl shadow-sm">
                     <div class="flex justify-between items-start">
                         <div>
@@ -116,7 +128,7 @@
                     <div class="grid grid-cols-1 gap-5">
                         <button data-page="maid-tracker-page" class="page-btn w-full text-white font-bold py-5 px-4 rounded-xl shadow-md">Maid Tracker</button>
                         <button data-page="milk-tracker-page" class="page-btn w-full text-white font-bold py-5 px-4 rounded-xl shadow-md">Milk Tracker</button>
-                        <button class="w-full bg-gray-300 text-gray-500 font-bold py-5 px-4 rounded-xl cursor-not-allowed">Expense Tracker (Coming Soon)</button>
+                        <button data-page="expense-tracker-page" class="page-btn w-full text-white font-bold py-5 px-4 rounded-xl shadow-md">Expense Tracker</button>
                     </div>
                 </div>
             </main>
@@ -170,6 +182,20 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Expense Tracker Page -->
+            <div id="expense-tracker-page" class="page hidden flex flex-col">
+                <div class="summary-card mb-4">
+                    <p class="text-sm text-gray-600">Total This Month</p>
+                    <p id="expense-total-month" class="text-3xl font-bold text-gray-800">₹0.00</p>
+                </div>
+                <div id="expense-list" class="flex-grow space-y-4 overflow-y-auto"></div>
+            </div>
+            
+            <!-- Floating Add Expense Button -->
+            <button id="add-expense-btn" class="hidden fixed bottom-10 right-10 bg-indigo-600 text-white rounded-full p-4 shadow-lg hover:bg-indigo-700 transition-transform transform hover:scale-110">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+            </button>
         </div>
         
         <!-- Footer -->
@@ -203,10 +229,24 @@
             </div>
         </div>
     </div>
+    <div id="expense-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden pointer-events-none opacity-0">
+        <form id="expense-form" class="modal-content bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+            <h3 class="text-xl font-bold text-center mb-6">Add New Expense</h3>
+            <div class="space-y-4">
+                <div><label for="expense-summary" class="block text-sm font-medium text-gray-700">Summary</label><input type="text" id="expense-summary" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm"></div>
+                <div><label for="expense-amount" class="block text-sm font-medium text-gray-700">Amount (₹)</label><input type="number" id="expense-amount" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm"></div>
+                <div><label for="expense-category" class="block text-sm font-medium text-gray-700">Category</label><select id="expense-category" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm"><option>Groceries</option><option>Bills</option><option>Utilities</option><option>Transport</option><option>Shopping</option><option>Other</option></select></div>
+                <div><label for="expense-date" class="block text-sm font-medium text-gray-700">Date</label><input type="date" id="expense-date" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm"></div>
+            </div>
+            <div class="mt-6">
+                <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 transition-colors">Add Expense</button>
+            </div>
+        </form>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, setDoc, collection, addDoc, query, orderBy, where } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
 
         function startApp() {
@@ -225,11 +265,12 @@
             const mainApp = document.getElementById('main-app');
             const googleSignInBtn = document.getElementById('google-signin-btn');
             const signOutBtn = document.getElementById('sign-out-btn');
+            const addExpenseBtn = document.getElementById('add-expense-btn');
             
             // --- GLOBAL STATE ---
-            let maidData = {}, milkData = {}, settingsData = { milkCost: 30, curdCost: 25, milkDefault: 1 };
+            let maidData = {}, milkData = {}, settingsData = { milkCost: 30, curdCost: 25, milkDefault: 1 }, expenses = [];
             let currentDate = new Date(), selectedDayElement = null, activeTracker = null;
-            let unsubMaid, unsubMilk, unsubSettings;
+            let unsubMaid, unsubMilk, unsubSettings, unsubExpenses;
 
             // --- AUTHENTICATION LOGIC ---
             onAuthStateChanged(auth, user => {
@@ -243,21 +284,16 @@
                     if (unsubMaid) unsubMaid();
                     if (unsubMilk) unsubMilk();
                     if (unsubSettings) unsubSettings();
+                    if (unsubExpenses) unsubExpenses();
                 }
             });
 
             googleSignInBtn.addEventListener('click', async () => {
                 const provider = new GoogleAuthProvider();
-                try {
-                    await signInWithPopup(auth, provider);
-                } catch (error) {
-                    console.error("Google Sign-In failed:", error);
-                }
+                try { await signInWithPopup(auth, provider); } catch (error) { console.error("Google Sign-In failed:", error); }
             });
 
-            signOutBtn.addEventListener('click', () => {
-                signOut(auth);
-            });
+            signOutBtn.addEventListener('click', () => { signOut(auth); });
 
             // --- MAIN APP LOGIC (runs only after login) ---
             function initializeAppLogic() {
@@ -266,25 +302,22 @@
                 const backToHomeBtn = document.getElementById('back-to-home');
 
                 // --- DATA LISTENERS ---
-                unsubMaid = onSnapshot(doc(db, "trackers", "maid"), (doc) => {
-                    maidData = doc.exists() ? doc.data() : {};
-                    if (activeTracker === 'maid-tracker-page') renderCalendar();
-                });
-                unsubMilk = onSnapshot(doc(db, "trackers", "milk"), (doc) => {
-                    milkData = doc.exists() ? doc.data() : {};
-                    if (activeTracker === 'milk-tracker-page') renderCalendar();
-                });
-                unsubSettings = onSnapshot(doc(db, "trackers", "settings"), (doc) => {
-                    if (doc.exists()) {
-                        settingsData = { ...settingsData, ...doc.data() };
-                        if (activeTracker) renderCalendar();
-                    }
+                unsubMaid = onSnapshot(doc(db, "trackers", "maid"), (doc) => { maidData = doc.exists() ? doc.data() : {}; if (activeTracker === 'maid-tracker-page') renderCalendar(); });
+                unsubMilk = onSnapshot(doc(db, "trackers", "milk"), (doc) => { milkData = doc.exists() ? doc.data() : {}; if (activeTracker === 'milk-tracker-page') renderCalendar(); });
+                unsubSettings = onSnapshot(doc(db, "trackers", "settings"), (doc) => { if (doc.exists()) { settingsData = { ...settingsData, ...doc.data() }; if (activeTracker) renderCalendar(); } });
+                
+                const expensesQuery = query(collection(db, "expenses"), orderBy("date", "desc"));
+                unsubExpenses = onSnapshot(expensesQuery, (snapshot) => {
+                    expenses = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+                    if (activeTracker === 'expense-tracker-page') renderExpenses();
                 });
 
                 // --- NAVIGATION ---
                 const showPage = (pageId) => {
                     document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
                     homePage.classList.add('hidden');
+                    addExpenseBtn.classList.add('hidden'); // Hide FAB by default
+
                     const pageToShow = document.getElementById(pageId);
                     if (pageToShow) {
                         activeTracker = pageId;
@@ -293,23 +326,108 @@
                         const title = pageId.split('-')[0];
                         pageTitle.textContent = `${title.charAt(0).toUpperCase() + title.slice(1)} Tracker`;
                         currentDate = new Date();
-                        renderCalendar();
+                        
+                        if (pageId.includes('tracker')) renderCalendar();
+                        
+                        if (pageId === 'expense-tracker-page') {
+                            renderExpenses();
+                            addExpenseBtn.classList.remove('hidden'); // Show FAB only for expenses
+                        }
                     }
                 };
                 const showHomePage = () => {
                     document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
                     homePage.classList.remove('hidden');
                     backToHomeBtn.classList.add('hidden');
+                    addExpenseBtn.classList.add('hidden');
                     pageTitle.textContent = "Home Hub";
                     activeTracker = null;
                     checkBillReminders();
                 };
                 document.querySelectorAll('.page-btn').forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.page)));
                 backToHomeBtn.addEventListener('click', showHomePage);
+                
+                // --- EXPENSE LOGIC ---
+                const expenseModal = document.getElementById('expense-modal');
+                const expenseForm = document.getElementById('expense-form');
+                
+                addExpenseBtn.addEventListener('click', () => {
+                    expenseForm.reset();
+                    document.getElementById('expense-date').valueAsDate = new Date();
+                    openModal(expenseModal);
+                });
 
-                // --- CALENDAR LOGIC ---
+                expenseForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const user = auth.currentUser;
+                    if (!user) return;
+
+                    const newExpense = {
+                        summary: document.getElementById('expense-summary').value,
+                        amount: parseFloat(document.getElementById('expense-amount').value),
+                        category: document.getElementById('expense-category').value,
+                        date: document.getElementById('expense-date').value,
+                        addedBy: user.displayName || 'Unknown User',
+                        uid: user.uid
+                    };
+                    await addDoc(collection(db, "expenses"), newExpense);
+                    closeModal(expenseModal);
+                });
+
+                function renderExpenses() {
+                    const expenseList = document.getElementById('expense-list');
+                    const totalMonthEl = document.getElementById('expense-total-month');
+                    expenseList.innerHTML = '';
+                    
+                    const now = new Date();
+                    const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+                    let totalMonth = 0;
+                    
+                    const groupedExpenses = expenses.reduce((acc, expense) => {
+                        if (expense.date.startsWith(currentMonthKey)) {
+                            totalMonth += expense.amount;
+                        }
+                        (acc[expense.date] = acc[expense.date] || []).push(expense);
+                        return acc;
+                    }, {});
+
+                    totalMonthEl.textContent = `₹${totalMonth.toFixed(2)}`;
+
+                    for (const date in groupedExpenses) {
+                        const dateHeader = document.createElement('h4');
+                        dateHeader.className = "font-bold text-gray-500 mt-4";
+                        dateHeader.textContent = getRelativeDate(date);
+                        expenseList.appendChild(dateHeader);
+
+                        groupedExpenses[date].forEach(exp => {
+                            const div = document.createElement('div');
+                            div.className = "summary-card flex items-center justify-between";
+                            div.innerHTML = `
+                                <div>
+                                    <p class="font-semibold text-gray-800">${exp.summary}</p>
+                                    <p class="text-sm text-gray-500">${exp.category} by ${exp.addedBy.split(' ')[0]}</p>
+                                </div>
+                                <p class="font-bold text-lg text-gray-900">₹${exp.amount.toFixed(2)}</p>
+                            `;
+                            expenseList.appendChild(div);
+                        });
+                    }
+                }
+                
+                function getRelativeDate(dateString) {
+                    const date = new Date(dateString);
+                    const today = new Date();
+                    const yesterday = new Date();
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    
+                    if (date.toDateString() === today.toDateString()) return 'Today';
+                    if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+                    return date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+                }
+
+                // --- CALENDAR LOGIC & MODALS ---
                 const renderCalendar = () => {
-                    if (!activeTracker) return;
+                    if (!activeTracker.includes('tracker')) return;
                     const page = document.getElementById(activeTracker);
                     const calendarEl = page.querySelector('.calendar');
                     const monthYearEl = page.querySelector('.month-year');
@@ -343,14 +461,63 @@
                         if (status === 'cleaned') element.classList.add('bg-green-500', 'text-white');
                         else if (status === 'absent') element.classList.add('bg-red-500', 'text-white');
                     } else if (activeTracker === 'milk-tracker-page') {
-                        if (status?.status === 'not-delivered') {
-                            element.classList.add('bg-gray-400', 'text-white');
-                        } else if (status && (status.milk > 0 || status.curd > 0)) {
-                            element.classList.add('bg-indigo-500', 'text-white');
-                        }
+                        if (status?.status === 'not-delivered') element.classList.add('bg-gray-400', 'text-white');
+                        else if (status && (status.milk > 0 || status.curd > 0)) element.classList.add('bg-indigo-500', 'text-white');
                     }
                 };
-
+                const openStatusModal = (day) => {
+                    const modalId = activeTracker === 'maid-tracker-page' ? 'maid-status-modal' : 'milk-status-modal';
+                    const modal = document.getElementById(modalId);
+                    modal.querySelector('.modal-date').textContent = `${day} ${currentDate.toLocaleString('default', { month: 'long' })}`;
+                    if (activeTracker === 'milk-tracker-page') {
+                        const monthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
+                        const dayData = milkData[monthKey]?.[day];
+                        document.getElementById('milk-packets').value = dayData?.milk ?? settingsData.milkDefault;
+                        document.getElementById('curd-units').value = dayData?.curd || 0;
+                    }
+                    openModal(modal);
+                };
+                const openModal = (modal) => {
+                    modal.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
+                    modal.querySelector('.modal-content').classList.remove('scale-95');
+                    document.body.style.overflow = 'hidden';
+                };
+                const closeModal = (modal) => {
+                    modal.classList.add('opacity-0');
+                    modal.querySelector('.modal-content').classList.add('scale-95');
+                    setTimeout(() => { modal.classList.add('hidden', 'pointer-events-none'); document.body.style.overflow = 'auto'; }, 300);
+                };
+                document.querySelectorAll('.modal').forEach(modal => modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(modal); }));
+                document.getElementById('maid-status-modal').addEventListener('click', async (e) => {
+                    if (e.target.matches('.status-btn')) {
+                        const status = e.target.dataset.status;
+                        const day = selectedDayElement.dataset.day;
+                        const monthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
+                        maidData[monthKey] = maidData[monthKey] || {};
+                        if (status === 'none') delete maidData[monthKey][day];
+                        else maidData[monthKey][day] = status;
+                        await setDoc(doc(db, "trackers", "maid"), maidData);
+                        closeModal(e.target.closest('.modal'));
+                    }
+                });
+                document.getElementById('milk-status-modal').addEventListener('click', async (e) => {
+                     if (e.target.matches('#save-milk-entry, #clear-milk-entry, #not-delivered-entry')) {
+                        const day = selectedDayElement.dataset.day;
+                        const monthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
+                        milkData[monthKey] = milkData[monthKey] || {};
+                        if (e.target.id === 'clear-milk-entry') delete milkData[monthKey][day];
+                        else if (e.target.id === 'not-delivered-entry') milkData[monthKey][day] = { status: 'not-delivered', milk: 0, curd: 0 };
+                        else {
+                            const milkQty = parseInt(document.getElementById('milk-packets').value) || 0;
+                            const curdQty = parseInt(document.getElementById('curd-units').value) || 0;
+                            if (milkQty > 0 || curdQty > 0) milkData[monthKey][day] = { milk: milkQty, curd: curdQty };
+                            else delete milkData[monthKey][day];
+                        }
+                        await setDoc(doc(db, "trackers", "milk"), milkData);
+                        closeModal(e.target.closest('.modal'));
+                    }
+                });
+                
                 // --- EVENT LISTENERS ---
                 document.querySelectorAll('.page').forEach(page => {
                     page.querySelector('.prev-month')?.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
@@ -365,69 +532,6 @@
                         };
                         await setDoc(doc(db, "trackers", "settings"), newSettings, { merge: true });
                     });
-                });
-
-                const openStatusModal = (day) => {
-                    const modalId = activeTracker === 'maid-tracker-page' ? 'maid-status-modal' : 'milk-status-modal';
-                    const modal = document.getElementById(modalId);
-                    modal.querySelector('.modal-date').textContent = `${day} ${currentDate.toLocaleString('default', { month: 'long' })}`;
-                    if (activeTracker === 'milk-tracker-page') {
-                        const monthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
-                        const dayData = milkData[monthKey]?.[day];
-                        document.getElementById('milk-packets').value = dayData?.milk ?? settingsData.milkDefault;
-                        document.getElementById('curd-units').value = dayData?.curd || 0;
-                    }
-                    modal.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
-                    modal.querySelector('.modal-content').classList.remove('scale-95');
-                    document.body.style.overflow = 'hidden';
-                };
-                const closeStatusModal = (modal) => {
-                    modal.classList.add('opacity-0');
-                    modal.querySelector('.modal-content').classList.add('scale-95');
-                    setTimeout(() => { modal.classList.add('hidden', 'pointer-events-none'); document.body.style.overflow = 'auto'; }, 300);
-                };
-                
-                document.querySelectorAll('.modal').forEach(modal => {
-                    modal.addEventListener('click', (e) => {
-                        if (e.target === modal) closeStatusModal(modal);
-                    });
-                });
-
-                document.getElementById('maid-status-modal').addEventListener('click', async (e) => {
-                    if (e.target.matches('.status-btn')) {
-                        const status = e.target.dataset.status;
-                        const day = selectedDayElement.dataset.day;
-                        const monthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
-                        maidData[monthKey] = maidData[monthKey] || {};
-                        if (status === 'none') delete maidData[monthKey][day];
-                        else maidData[monthKey][day] = status;
-                        await setDoc(doc(db, "trackers", "maid"), maidData);
-                        closeStatusModal(e.target.closest('.modal'));
-                    }
-                });
-
-                document.getElementById('milk-status-modal').addEventListener('click', async (e) => {
-                     if (e.target.matches('#save-milk-entry, #clear-milk-entry, #not-delivered-entry')) {
-                        const day = selectedDayElement.dataset.day;
-                        const monthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
-                        milkData[monthKey] = milkData[monthKey] || {};
-                        
-                        if (e.target.id === 'clear-milk-entry') {
-                            delete milkData[monthKey][day];
-                        } else if (e.target.id === 'not-delivered-entry') {
-                            milkData[monthKey][day] = { status: 'not-delivered', milk: 0, curd: 0 };
-                        } else {
-                            const milkQty = parseInt(document.getElementById('milk-packets').value) || 0;
-                            const curdQty = parseInt(document.getElementById('curd-units').value) || 0;
-                            if (milkQty > 0 || curdQty > 0) {
-                                milkData[monthKey][day] = { milk: milkQty, curd: curdQty };
-                            } else {
-                                delete milkData[monthKey][day];
-                            }
-                        }
-                        await setDoc(doc(db, "trackers", "milk"), milkData);
-                        closeStatusModal(e.target.closest('.modal'));
-                    }
                 });
                 
                 // --- SUMMARY & BILLS ---
@@ -452,9 +556,8 @@
                 const calculateMilkTotals = (monthData = {}) => {
                     let totalMilk = 0, totalCurd = 0, notDeliveredDays = 0;
                     for (const day in monthData) {
-                        if(monthData[day]?.status === 'not-delivered') {
-                            notDeliveredDays++;
-                        } else {
+                        if(monthData[day]?.status === 'not-delivered') notDeliveredDays++;
+                        else {
                             totalMilk += monthData[day]?.milk || 0;
                             totalCurd += monthData[day]?.curd || 0;
                         }
@@ -491,7 +594,6 @@
                 // --- INITIALIZATION ---
                 showHomePage();
                 
-                // Update settings inputs with loaded data
                 document.getElementById('milk-cost').value = settingsData.milkCost;
                 document.getElementById('curd-cost').value = settingsData.curdCost;
                 document.getElementById('milk-default-packets').value = settingsData.milkDefault;
